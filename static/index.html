@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Digital Watcher</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 10 10%22><circle cx=%225%22 cy=%225%22 r=%224%22 fill=%22%23e5172f%22/></svg>">
+<link rel="stylesheet" href="theme.css">
+<style>
+  .seg{display:inline-flex;border:1px solid var(--line2);border-radius:var(--r-sm);overflow:hidden}
+  .seg button{background:transparent;border:0;color:var(--muted);padding:7px 14px;font:600 12.5px var(--font);cursor:pointer}
+  .seg button.on{background:var(--red);color:#fff}
+  .feat{padding:12px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface)}
+  .feat .n{font:700 18px var(--font)} .feat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .alert{padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:var(--r-sm);background:var(--surface);animation:tin .3s}
+  .alert.moyenne{border-left-color:var(--warn)}
+  .alert ul{margin:6px 0 0;padding-left:16px;color:var(--muted);font-size:12.5px}
+  #alerts{max-height:520px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+  .shield{font-size:40px;line-height:1}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>DIGITAL WATCHER <small>détection d'anomalies comportementales</small></div>
+  <div class="spacer"></div>
+  <div class="seg" id="src"><button data-s="demo" class="on">Démo simulée</button><button data-s="live">Système réel</button></div>
+  <button class="btn ghost sm" id="reset">↺ Réapprendre</button>
+</header>
+<main class="wrap">
+  <div class="grid g4" style="margin-bottom:20px">
+    <div class="stat"><div class="l">Phase</div><div class="v" id="phase">—</div><div class="meter" style="margin-top:8px"><i id="prog" style="width:0"></i></div></div>
+    <div class="stat"><div class="l">Score actuel / seuil</div><div class="v" id="score">—</div></div>
+    <div class="stat"><div class="l">Alertes</div><div class="v red" id="nAlerts">0</div></div>
+    <div class="stat"><div class="l">Destinations connues</div><div class="v" id="known">0</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 380px;gap:20px">
+    <div class="col" style="gap:20px">
+      <div class="card"><div class="card-h"><h3>Score d'anomalie (Isolation Forest + écarts robustes)</h3><span class="row"><span class="badge red">— score</span><span class="badge">- - seuil</span></span></div>
+        <canvas id="chart" style="width:100%;height:240px"></canvas></div>
+      <div class="grid g4" id="feats"></div>
+      <div class="grid g2">
+        <div class="card"><h3>Simuler une attaque</h3><p class="dim" style="margin-top:0;font-size:12.5px">Disponible en mode démo, une fois l'apprentissage terminé.</p>
+          <div class="row" id="attacks">
+            <button class="btn ghost sm" data-a="scan">Balayage de ports</button><button class="btn ghost sm" data-a="exfil">Exfiltration</button>
+            <button class="btn ghost sm" data-a="flood">Flood entrant</button><button class="btn ghost sm" data-a="beacon">Beaconing C2</button><button class="btn ghost sm" data-a="dns_tunnel">Tunnel DNS</button></div>
+          <label style="margin-top:16px">Sensibilité : <span id="sensv">0.5</span></label><input type="range" id="sens" min="0" max="1" step="0.05" value="0.5"></div>
+        <div class="card"><h3>Destinations les plus contactées</h3><table class="t" id="top"></table></div>
+      </div>
+    </div>
+    <div class="card"><div class="card-h"><h3>Alertes</h3><span class="badge" id="srcBadge"></span></div><div id="alerts"></div></div>
+  </div>
+</main>
+<script src="ui.js"></script><script src="charts.js"></script><script src="app.js"></script>
+</body>
+</html>
